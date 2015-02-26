@@ -1,0 +1,18 @@
+{
+	"api":
+		[
+			{
+			"path":"/system/datetime",
+			"command":"date '+%Y-%m-%d %H:%M:%S'",
+			"command_output_regex":"(?<datetime>.+)"
+			},
+			{ 
+			"path":"/system/load",
+			"command":"uptime",
+			"command_output_regex":"load averages: (?<load1>\\S+) (?<load5>\\S+) (?<load15>\\S+)"
+			},
+			{ 
+			"path":"/system/uptime"
+			}
+		]
+}
