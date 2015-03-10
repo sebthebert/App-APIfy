@@ -22,27 +22,34 @@ sub startup
 
 	my $config = $self->plugin('JSONConfig', 
 	   { file => "$FindBin::Bin/../conf/apify.json" });
-
-	# Router
+	
+	my %input = ();
+	foreach my $api (@{$config->{api}})
+    {
+        my $type = $api->{input}->{type};
+        $input{$type} = 1;
+    }
+    foreach my $m (keys %input)
+    {
+        my $module = "App/APIfy/Input/${m}.pm";
+        require $module;
+        $module->import()
+    }
     my $r = $self->routes;
+
+	$r->get("${API_ROOT}/info")->to('API#info');
 
 	foreach my $api (@{$config->{api}})
 	{
 		printf "path: %s\n", $api->{path};
-		if (defined $api->{command})
-		{
 			$r->get($API_ROOT . $api->{path} => sub { 
 				my $c = shift;
-				my $command_output = `$api->{command}`;
-				$command_output =~ /$api->{command_output_regex}/;
-				my $str = '';
-				foreach my $k (keys %+)
-				{
-					$str .= "$k $+{$k} "
-				}	
-  				$c->render(text => "$api->{path} ($api->{command}) => $str" );
+
+                my $module = "App::APIfy::Input::" . $api->{input}->{type};
+				my $data = $module->execute($api->{input});
+				
+				$c->render(json => $data );
 				});
-		}
 	}
 }
 

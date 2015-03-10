@@ -3,16 +3,25 @@
 		[
 			{
 			"path":"/system/datetime",
-			"command":"date '+%Y-%m-%d %H:%M:%S'",
-			"command_output_regex":"(?<datetime>.+)"
+			"input":{
+		      "type":"Command",
+			     "command":"date '+%Y-%m-%d %H:%M:%S'",
+			     "command_output_regex":"(?<datetime>.+)"
+			     }
 			},
 			{ 
 			"path":"/system/load",
-			"command":"uptime",
-			"command_output_regex":"load averages: (?<load1>\\S+) (?<load5>\\S+) (?<load15>\\S+)"
+			"input":{
+			     "type":"Command",
+			     "command":"uptime",
+			     "command_output_regex":"load averages: (?<load1>\\S+) (?<load5>\\S+) (?<load15>\\S+)"
+			     }
 			},
 			{ 
-			"path":"/system/uptime"
-			}
+            "path":"/test",
+            "input":{
+                 "type":"Spreadsheet"
+                 }
+            }
 		]
 }
